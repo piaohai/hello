@@ -1,18 +1,20 @@
 var http = require('http');
 
 var config = require('./app/config/config');
-var Robot = require('./lib/main').Robot;
+var Robot = require('./lib/robot').Robot;
 var fs = require('fs');
 
 //
 // node main dev master run service
 //
 
+var robot = null;
+
 var run = function() {
-    var robot = new Robot(config);
+    robot = new Robot(config);
     var script = fs.readFileSync(process.cwd() + '/app/config/script.js', 'utf8');
     robot.runAgent(script);
- }
+}
 
 // Controlling server.
 http.createServer(function (req, res) {
@@ -21,25 +23,35 @@ http.createServer(function (req, res) {
 
         if (url.pathname === '/') {
             // Return stats on '/'
-            return res.end(JSON.stringify(stats) + "\n");
-
+            return res.end(JSON.stringify(config) + "\n");
         } else if (url.pathname === '/set') {
             // Set params on '/set', preserving the type of param.
             for (var key in url.query)
                 config[key] = (typeof config[key] == 'number') ? +url.query[key] : url.query[key];
             return res.end(JSON.stringify(config) + "\n");
-        
+
         } else if (url.pathname === '/restart') {
+            var ok = "OK\n";
+            if (robot!=null) {
+                robot.restart();
+            } else {
+                ok = 'client is sleeping\n';
+            }
+            return res.end(ok);
+        } else if (url.pathname === '/start') {
             // Restart process on '/restart'
-            require('child_process').exec("sudo restart client", function() {});
+            run();
             return res.end("OK\n");
-        } else if (url.pathname === '/connect') {
-            // Restart process on '/restart'
-             run();
-             return res.end("OK\n");
         }
     }
     res.writeHead(404);
     res.end();
 }).listen(5555);
 
+process.on('uncaughtException', function(err) {
+    console.error(' Caught exception: ' + err.stack);
+    fs.appendFile('.log', err.stack, function (err) { });
+    setTimeout(function(){
+        process.exit(1);
+    },10000)
+});

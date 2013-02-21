@@ -1,5 +1,5 @@
 var config = require('./app/config/config');
-var Robot = require('./lib/main').Robot;
+var Robot = require('./lib/robot').Robot;
 var fs = require('fs');
 
 //
@@ -7,7 +7,18 @@ var fs = require('fs');
 //
 var robot = new Robot(config);
 
-if (robot.mode==='master') {
+
+var mode = 'master';
+
+if (process.argv.length > 2){
+    mode = process.argv[2];
+}
+ 
+if (mode !== 'master' && mode !== 'client') {
+	throw new Error(' mode must be master or client');
+}
+
+if (mode==='master') {
     robot.runMaster(__filename);
 } else {
     var script = fs.readFileSync(process.cwd() + '/app/config/script.js', 'utf8');
