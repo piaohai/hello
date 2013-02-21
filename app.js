@@ -7,12 +7,12 @@ var fs = require('fs');
 //
 // node main master run service
 //
-
 var robot = null;
 
 var run = function() {
     robot = new Robot(config);
-    var script = fs.readFileSync(process.cwd() + '/app/config/script.js', 'utf8');
+    var path = __filename.substring(0,__filename.lastIndexOf('/'));
+    var script = fs.readFileSync(path + '/app/config/script.js', 'utf8');
     robot.runAgent(script);
 }
 
