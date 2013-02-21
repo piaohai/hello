@@ -1,4 +1,3 @@
-var mqtt = require('mqttjs');
 var http = require('http');
 
 var config = require('./app/config/config');

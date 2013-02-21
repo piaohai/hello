@@ -4,8 +4,9 @@
     "description": "A distributed load test framework using Amazon EC2 instances",
     "author": "Alexander Shtuchkin <ashtuchkin@gmail.com>",
     "dependencies": {
-    	"socket.io-client": ">=0.9.6"
+     "socket.io-client": ">=0.9.6"
   	,"socket.io": ">=0.9.6"
+  	,"mqttjs": ">=0.1.7"
   	, "underscore": ">=1.0.0"
     }
 }
