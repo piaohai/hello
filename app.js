@@ -1,6 +1,6 @@
 var http = require('http');
-
-var config = require('./app/config/config');
+var env = require('./app/config/env.json').env;
+var config = require('./app/config/'+env+'/config');
 var Robot = require('./lib/robot').Robot;
 var fs = require('fs');
 
@@ -12,8 +12,8 @@ var robot = null;
 var run = function() {
     robot = new Robot(config);
     var path = __filename.substring(0,__filename.lastIndexOf('/'));
-    var script = fs.readFileSync(path + '/app/config/script.js', 'utf8');
-    robot.runAgent(script);
+    var scriptFile = path + '/app/script/mqtt.js';
+    robot.runAgent(scriptFile);
 }
 
 // Controlling server.
@@ -57,10 +57,11 @@ http.createServer(function (req, res) {
     res.end();
 }).listen(5555);
 
+
+
 process.on('uncaughtException', function(err) {
-    console.error(' Caught exception: ' + err.stack);
-    fs.appendFile('.log', err.stack, function (err) { });
-    setTimeout(function(){
-        process.exit(1);
-    },10000)
+  console.error(' Caught exception: ' + err.stack);
+  if (!!robot && !!robot.agent){
+    robot.agent.socket.emit('crash',err.stack);
+  }
 });

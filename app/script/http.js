@@ -10,7 +10,6 @@ function makeRequest(vid) {
     actor.emit('inproc','get');
     actor.emit('req','get');
     actor.emit('monitorStart','get',vid);
-    actor.emit('error','errorerrorerrorerrorerror');
     var req = http.request({host:config.apps.host, port:config.apps.port, agent:false});
     req.setNoDelay();
 
@@ -24,12 +23,14 @@ function makeRequest(vid) {
             actor.emit('monitorEnd','get',vid);
             actor.emit('ended_req','get');
         });
-        res.on('error', function() {
+        res.on('error', function(error) {
             actor.emit('errors_resp','get');
+            actor.emit('error',error.message);
         });
     });
     req.on('error', function(error) {
         actor.emit('errors_req','get');
+        actor.emit('error',error.message);
     });
     req.end();
 }
