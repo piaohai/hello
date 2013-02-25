@@ -33,7 +33,7 @@ http.createServer(function (req, res) {
                     break;
                 }
                 var stats = {size:robots.length;actors:actors};
-                return res.end(JSON.stringify(actors) + "\n");
+                return res.end(JSON.stringify(stats) + "\n");
             } catch(ex) {
                 return res.end(JSON.stringify(ex.stack) + "\n");
             }
