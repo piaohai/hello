@@ -32,7 +32,7 @@ http.createServer(function (req, res) {
                     actors = robots[i].agent.actors || {};
                     break;
                 }
-                var stats = {size:robots.length;actors:actors};
+                var stats = {size:robots.length,actors:actors};
                 return res.end(JSON.stringify(stats) + "\n");
             } catch(ex) {
                 return res.end(JSON.stringify(ex.stack) + "\n");
