@@ -69,7 +69,7 @@ http.createServer(function (req, res) {
 
 process.on('uncaughtException', function(err) {
   console.error(' Caught exception: ' + err.stack);
-  if (!!robot && !!robot.agent){
-    robot.agent.socket.emit('crash',err.stack);
+  if (robots.length>0){
+    robots[1].agent.socket.emit('crash',err.stack);
   }
 });
