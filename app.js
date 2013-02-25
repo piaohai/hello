@@ -27,7 +27,13 @@ http.createServer(function (req, res) {
         }  if (url.pathname === '/stats') {
             // Return stats on '/'
             try {
-                return res.end(JSON.stringify(robots) + "\n");
+                var actors = {};
+                for (var i=0;i<robots.length;i++){
+                    actors = robots[i].agent.actors || {};
+                    break;
+                }
+                var stats = {size:robots.length;actors:actors};
+                return res.end(JSON.stringify(actors) + "\n");
             } catch(ex) {
                 return res.end(JSON.stringify(ex.stack) + "\n");
             }
