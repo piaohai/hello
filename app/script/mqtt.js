@@ -3,13 +3,21 @@ var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 
 //const data
 var port = 3010;
-//var host = 'localhost';
-var host = '114.113.202.154';
+var host = 'localhost';
+//var host = '114.113.202.154';
+//var host = '192.168.144.199';
 var domain = 'blog.163.com';
 var deviceId = 'android_1';
 var urs = 'appmee@126.com';
 var passed = 'qa1234';
 
+var isDebug = function(){
+  if (typeof robot!='undefined'){
+    return robot.mode;
+  } else {
+    return true;
+  }
+}
 
 mqtt.createClient(port, host, function(err, client) {
   var act = new Action(client);
@@ -20,6 +28,9 @@ mqtt.createClient(port, host, function(err, client) {
   }
   for (var i = 0; i < events.length; i++) {
     client.on(events[i], function(packet) {
+      if (isDebug()){
+        console.log(packet);
+      }
       act[packet.cmd].apply(act,[packet]);
     });
   }
@@ -43,7 +54,7 @@ var bindMsg = {
 };
 
 var Action = function(client){
-  this.msgId = 0;
+  this.msgId = 1;
   this.client = client;
 }
 
@@ -86,7 +97,7 @@ Action.prototype.registerack = function(payload){
   if (payload.code===200) {
     this.login();
   } else {
-      this.emit('error','registerack code ' + payload.code);
+    this.emit('error','registerack code ' + payload.code);
   }
 }
 
@@ -105,6 +116,7 @@ Action.prototype.register = function() {
 }
 
 Action.prototype.send = function(topic,qos,payload) {
+  this.msgId++;
   this.client.publish({messageId: this.msgId, topic:topic,qos:qos,payload:JSON.stringify(payload)});
 }
 
