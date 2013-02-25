@@ -3,17 +3,17 @@ var env = require('./app/config/env.json').env;
 var config = require('./app/config/'+env+'/config');
 var Robot = require('./lib/robot').Robot;
 var fs = require('fs');
-
+var robots = [];
 //
 // node main master run service
 //
-var robot = null;
 
 var run = function() {
-    robot = new Robot(config);
+    var robot = new Robot(config);
     var path = __filename.substring(0,__filename.lastIndexOf('/'));
     var scriptFile = path + '/app/script/mqtt.js';
     robot.runAgent(scriptFile);
+    robots.push(robot);
 }
 
 // Controlling server.
@@ -27,8 +27,14 @@ http.createServer(function (req, res) {
         }  if (url.pathname === '/stats') {
             // Return stats on '/'
             try {
-                var actors = robot.agent.actors || {};
-                return res.end(JSON.stringify(actors) + "\n");
+                var ids = [];
+                for (var id in robots){
+                    var actors = robot.agent.actors || {};
+                    for (var index in actors){
+                        ids.push(actors[index].id);
+                    }
+                }
+                return res.end(JSON.stringify(ids) + "\n");
             } catch(ex) {
                 return res.end(JSON.stringify(ex.stack) + "\n");
             }
