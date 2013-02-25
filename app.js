@@ -40,6 +40,14 @@ http.createServer(function (req, res) {
             return res.end(JSON.stringify(config) + "\n");
 
         } else if (url.pathname === '/restart') {
+            // Restart process on '/restart'
+            require('child_process').exec("sudo restart client", function() {});
+            return res.end("OK\n");
+        }  else if (url.pathname === '/pull') {
+            // Restart process on '/restart'
+            require('child_process').exec("cd /home/ubuntu/hello && git pull ", function() {});
+            return res.end("OK\n");
+        } else if (url.pathname === '/reset') {
             var ok = "OK\n";
             if (robot!=null) {
                 robot.restart();
