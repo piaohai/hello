@@ -28,8 +28,8 @@ http.createServer(function (req, res) {
             // Return stats on '/'
             try {
                 var ids = [];
-                for (var id in robots){
-                    var actors = robot.agent.actors || {};
+                for (var i=0;i<robots.length;i++){
+                    var actors = robots[i].agent.actors || {};
                     for (var index in actors){
                         ids.push(actors[index].id);
                     }
