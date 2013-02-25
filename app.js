@@ -39,7 +39,7 @@ http.createServer(function (req, res) {
             }
             return res.end(JSON.stringify(config) + "\n");
 
-        } else if (url.pathname === '/restart') {
+        } else if (url.pathname === '/stop') {
             // Restart process on '/restart'
             require('child_process').exec("sudo restart client", function() {});
             return res.end("OK\n");
@@ -48,12 +48,6 @@ http.createServer(function (req, res) {
             require('child_process').exec("cd /home/ubuntu/hello && git pull ", function() {});
             return res.end("OK\n");
         } else if (url.pathname === '/reset') {
-            var ok = "OK\n";
-            if (robot!=null) {
-                robot.restart();
-            } else {
-                ok = 'client is sleeping\n';
-            }
             return res.end(ok);
         } else if (url.pathname === '/start') {
             // Restart process on '/restart'
