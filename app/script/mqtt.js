@@ -11,6 +11,7 @@ var id = Math.random().toString(36).slice(2);
 var deviceId = 'android_' + id;
 var urs = 'appmee@126.com';
 var passed = 'qa1234';
+var interval = 10000;
 
 var isDebug = function(){
   if (typeof robot!='undefined'){
@@ -35,9 +36,9 @@ mqtt.createClient(port, host, function(err, client) {
       act[packet.cmd].apply(act,[packet]);
     });
   }
-  client.connect({keepalive: 10000});
+  client.connect({keepalive: interval});
   client.on('connack', function(packet) {
-  setInterval(function() {client.pingreq(); }, 1000);
+  setInterval(function() {client.pingreq(); }, interval);
   act.register();
    //setInterval(function(){subscribe(client)},2000);
  });
