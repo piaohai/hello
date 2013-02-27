@@ -4,7 +4,7 @@ var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 //const data
 var port = 3010;
 var host = 'localhost';
-//var host = '114.113.202.154';
+var host = '114.113.202.154';
 //var host = '192.168.144.199';
 var domain = 'blog.163.com';
 var deviceId = 'android_1';
