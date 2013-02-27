@@ -38,8 +38,8 @@ mqtt.createClient(port, host, function(err, client) {
   }
   client.connect({keepalive: interval});
   client.on('connack', function(packet) {
-  setInterval(function() {client.pingreq(); }, Math.round(Math.random()*10)*interval);
-  act.register();
+  //setInterval(function() {client.pingreq(); }, Math.round(Math.random()*10)*interval);
+  //act.register();
    //setInterval(function(){subscribe(client)},2000);
  });
 });
