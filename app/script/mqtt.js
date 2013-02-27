@@ -3,11 +3,12 @@ var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 
 //const data
 var port = 3010;
-var host = 'localhost';
+//var host = 'localhost';
 var host = '114.113.202.154';
 //var host = '192.168.144.199';
 var domain = 'blog.163.com';
-var deviceId = 'android_1';
+var id = Math.random().toString(36).slice(2);
+var deviceId = 'android_' + id;
 var urs = 'appmee@126.com';
 var passed = 'qa1234';
 
@@ -34,7 +35,7 @@ mqtt.createClient(port, host, function(err, client) {
       act[packet.cmd].apply(act,[packet]);
     });
   }
-  client.connect({keepalive: 1000});
+  client.connect({keepalive: 10000});
   client.on('connack', function(packet) {
   setInterval(function() {client.pingreq(); }, 1000);
   act.register();
