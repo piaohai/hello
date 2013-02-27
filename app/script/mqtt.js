@@ -4,14 +4,19 @@ var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 //const data
 var port = 3010;
 //var host = 'localhost';
-var host = '114.113.202.154';
-//var host = '192.168.144.199';
+//var host = '114.113.202.154';
+var host = '192.168.144.199';
 var domain = 'blog.163.com';
 var id = Math.random().toString(36).slice(2);
 var deviceId = 'android_' + id;
-var urs = 'appmee@126.com';
+var user = 'zxc792@163.com';
 var passed = 'qa1234';
 var interval = 10000;
+var productKey = "94b4b71691a3ee3da605ed4f02696691";
+var platform = "android";
+var expire_hours = "12";
+var nonce = "abc12f";
+var signature = "OvmK969ardtilq3RCRJIANqj6nM=";
 
 var isDebug = function(){
   if (typeof robot!='undefined'){
@@ -39,22 +44,11 @@ mqtt.createClient(port, host, function(err, client) {
   client.connect({keepalive: interval});
   client.on('connack', function(packet) {
   //setInterval(function() {client.pingreq(); }, Math.round(Math.random()*10)*interval);
-  //act.register();
+  act.register();
    //setInterval(function(){subscribe(client)},2000);
  });
 });
-
-
-
-var bindMsg = {
-    domain: "blog.163.com",
-    productKey: "94b4b71691a3ee3da605ed4f02696691",
-    expire_hours: "12",
-    nonce: "abc12f",
-    user: "zxc792@163.com",
-    signature: "OvmK969ardtilq3RCRJIANqj6nM="
-};
-
+ 
 var Action = function(client){
   this.msgId = 1;
   this.client = client;
@@ -95,7 +89,7 @@ Action.prototype.publish = function(packet){
 
 Action.prototype.registerack = function(payload){
   if (payload.code===200) {
-    this.login();
+    this.regbind();
   } else {
     this.emit('error','registerack code ' + payload.code);
   }
@@ -111,7 +105,7 @@ Action.prototype.suback = function(packet){
 
 Action.prototype.register = function() {
   var topic = 'blog.163.com/register';
-  var payload = {"msg": "hello", "id": this.msgId,'deviceId':deviceId,domain:domain};
+  var payload = {"msg": "hello", "id": this.msgId,'deviceId':deviceId,"domain":domain};
   this.send(topic,1,payload);
 }
 
@@ -120,9 +114,34 @@ Action.prototype.send = function(topic,qos,payload) {
   this.client.publish({messageId: this.msgId, topic:topic,qos:qos,payload:JSON.stringify(payload)});
 }
 
-Action.prototype.login = function(){
+Action.prototype.regbind = function(){
+  var topic = 'blog.163.com/reg_bind';
+  var payload = {"user":user,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
+  this.send(topic,1,payload);
+}
+ 
+
+Action.prototype.bind = function(){
   var topic = 'blog.163.com/bind';
-  var payload = {"msg": bindMsg, "id": this.msgId,'deviceId':deviceId,domain:domain};
+  var payload = {"user":user,"expire_hours":12,"signature":signature,"productKey":productKey,'deviceId':deviceId,"domain":domain};
+  this.send(topic,1,payload);
+}
+
+Action.prototype.unbind = function(){
+  var topic = 'blog.163.com/cancel_bind';
+  var payload = {"user":user,"platform":platform,"domain":domain};
+  this.send(topic,1,payload);
+}
+
+Action.prototype.ack = function(){
+  var topic = 'blog.163.com/ack';
+  var payload = {"user":user,"msgIds":[this.msgId]};
+  this.send(topic,1,payload);
+}
+
+Action.prototype.reconnect = function(){
+  var topic = 'blog.163.com/reconnect';
+  var payload = {'deviceId':deviceId,"domain":[domain],"timestamp":Date.now()};
   this.send(topic,1,payload);
 }
 
