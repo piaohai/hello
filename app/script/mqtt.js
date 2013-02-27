@@ -82,7 +82,6 @@ Action.prototype.puback = function(packet){
 
 Action.prototype.publish = function(packet){
   var topic = packet.topic;
-  console.error(packet);
   var name = topic.substring(topic.indexOf('/')+1,topic.length);
   if (typeof this[name]==='undefined'){
       console.error(packet);
@@ -93,7 +92,6 @@ Action.prototype.publish = function(packet){
 
 
 Action.prototype.registerack = function(payload){
-  console.log(payload.code);
   if (payload.code===200) {
     this.login();
   } else {

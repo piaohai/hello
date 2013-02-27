@@ -7,13 +7,14 @@ var robots = [];
 //
 // node main master run service
 //
-
-var run = function() {
-    var robot = new Robot(config);
-    var path = __filename.substring(0,__filename.lastIndexOf('/'));
-    var scriptFile = path + '/app/script/mqtt.js';
-    robot.runAgent(scriptFile);
-    robots.push(robot);
+var run = function(num) {
+    for (var i = 0 ;i < num;i++) {
+        var robot = new Robot(config);
+        var path = __filename.substring(0,__filename.lastIndexOf('/'));
+        var scriptFile = path + '/app/script/mqtt.js';
+        robot.runAgent(scriptFile);
+        robots.push(robot);
+    }
 }
 
 // Controlling server.
@@ -55,13 +56,13 @@ http.createServer(function (req, res) {
         } else if (url.pathname === '/reset') {
             return res.end(ok);
         } else if (url.pathname === '/start') {
-            // Restart process on '/restart'
-            run();
-            return res.end("OK\n");
+            var num = url.query['num'] || 1;
+            run(num);
+            return res.end("OK\n" + num);
         }
     }
     res.writeHead(404);
-    res.end();
+    res.end("<h1>404<h1>\n");
 }).listen(5555);
 
 
