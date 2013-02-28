@@ -1,8 +1,8 @@
 {
-    "name": "ec2-fleet",
-    "version": "0.1.0",
-    "description": "A distributed load test framework using Amazon EC2 instances",
-    "author": "Alexander Shtuchkin <ashtuchkin@gmail.com>",
+    "name": "robot-client",
+    "version": "0.0.1",
+    "description": "A distributed load test framework",
+    "author": "<piaohai@gmail.com>",
     "dependencies": {
      "socket.io-client": ">=0.9.6"
   	,"socket.io": ">=0.9.6"
