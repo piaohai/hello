@@ -1,6 +1,5 @@
-var env = require('./app/config/env.json').env;
-
-var config = require('./app/config/'+env+'/config');
+var envConfig = require('./app/config/env.json');
+var config = require('./app/config/'+envConfig.env+'/config');
 var Robot = require('./lib/robot').Robot;
 var fs = require('fs');
 //
@@ -22,7 +21,7 @@ if (mode !== 'master' && mode !== 'client') {
 if (mode==='master') {
     robot.runMaster(__filename);
 } else {
-    var script = (process.cwd() + '/app/script/mqtt.js');
+    var script = (process.cwd() + envConfig.script);
     robot.runAgent(script);
 }
 

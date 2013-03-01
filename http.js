@@ -1,6 +1,6 @@
 var http = require('http');
-var env = require('./app/config/env.json').env;
-var config = require('./app/config/'+env+'/config');
+var envConfig = require('./app/config/env.json');
+var config = require('./app/config/'+envConfig.env+'/config');
 var Robot = require('./lib/robot').Robot;
 var fs = require('fs');
 var robots = [];
@@ -11,7 +11,7 @@ var run = function(num) {
     for (var i = 0 ;i < num;i++) {
         var robot = new Robot(config);
         var path = __filename.substring(0,__filename.lastIndexOf('/'));
-        var scriptFile = path + '/app/script/mqtt.js';
+        var scriptFile = path + envConfig.script;
         robot.runAgent(scriptFile);
         robots.push(robot);
     }

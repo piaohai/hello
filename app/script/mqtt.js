@@ -4,8 +4,8 @@ var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 //const data
 var port = 3010;
 //var host = 'localhost';
-//var host = '114.113.202.154';
-var host = '192.168.144.199';
+var host = '114.113.202.154';
+//var host = '192.168.144.199';
 var domain = 'blog.163.com';
 var id = Math.random().toString(36).slice(2);
 var deviceId = 'android_' + id;
@@ -17,6 +17,7 @@ var platform = "android";
 var expire_hours = "12";
 var nonce = "abc12f";
 var signature = "OvmK969ardtilq3RCRJIANqj6nM=";
+var PAST = 8 * 60 * 60 * 1000;
 
 var isDebug = function(){
   if (typeof robot!='undefined'){
@@ -103,8 +104,21 @@ Action.prototype.pubcomp = function(packet){
 Action.prototype.suback = function(packet){
 }
 
+Action.prototype.specify = function(payload){
+  var msgs= payload;
+  var ids = [];
+  for (var i = 0;i< msgs.length;i++){
+      var msg = msgs[i];
+      ids.push(msg.msgId);
+  }
+  var topic = domain + '/ack';
+  var payload = {"user":user,"msgIds":ids}
+  this.send(topic,1,payload);
+
+}
+
 Action.prototype.register = function() {
-  var topic = 'blog.163.com/register';
+  var topic = domain + '/register';
   var payload = {"platform":platform,'deviceId':deviceId,"domain":domain,"productKey":productKey};
   this.send(topic,1,payload);
 }
@@ -115,33 +129,34 @@ Action.prototype.send = function(topic,qos,payload) {
 }
 
 Action.prototype.regbind = function(){
-  var topic = 'blog.163.com/reg_bind';
-  var payload = {"platform":platform,"user":user,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
+  var topic = domain + '/reg_bind';
+  console.log("regbind")
+  var payload = {"platform":platform,"user":user,"timestamp":Date.now()-PAST,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
   this.send(topic,1,payload);
 }
  
 
 Action.prototype.bind = function(){
-  var topic = 'blog.163.com/bind';
+  var topic = domain + '/bind';
   var payload = {"platform":platform,"user":user,"expire_hours":12,"signature":signature,"productKey":productKey,'deviceId':deviceId,"domain":domain};
   this.send(topic,1,payload);
 }
 
 Action.prototype.unbind = function(){
-  var topic = 'blog.163.com/cancel_bind';
+  var topic = domain + '/cancel_bind';
   var payload = {"user":user,"platform":platform,"domain":domain};
   this.send(topic,1,payload);
 }
 
 Action.prototype.ack = function(){
-  var topic = 'blog.163.com/ack';
+  var topic = domain + '/ack';
   var payload = {"user":user,"msgIds":[this.msgId]};
   this.send(topic,1,payload);
 }
 
 Action.prototype.reconnect = function(){
-  var topic = 'blog.163.com/reconnect';
-  var payload = {'deviceId':deviceId,"domain":[domain],"timestamp":Date.now()};
+  var topic = domain + '/reconnect';
+  var payload = {'deviceId':deviceId,"domain":[domain],"timestamp":Date.now()-PAST};
   this.send(topic,1,payload);
 }
 
