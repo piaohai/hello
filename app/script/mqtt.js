@@ -5,7 +5,7 @@ var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 var port = 3010;
 //var host = 'localhost';
 var host = '114.113.202.154';
-//var host = '192.168.144.199';
+//var host = '192.168.182.115';
 var domain = 'blog.163.com';
 var id = Math.random().toString(36).slice(2);
 var deviceId = 'android_' + id;
@@ -85,6 +85,9 @@ Action.prototype.publish = function(packet){
       return;
   }
   this[name](JSON.parse(packet.payload));
+  if (packet.qos==1){
+      console.log(' qos = 1');
+  }
 }
 
 
@@ -111,10 +114,13 @@ Action.prototype.specify = function(payload){
       var msg = msgs[i];
       ids.push(msg.msgId);
   }
-  var topic = domain + '/ack';
-  var payload = {"user":user,"msgIds":ids}
-  this.send(topic,1,payload);
+  this.ack(ids);
+}
 
+Action.prototype.ack = function(ids){
+  var topic = domain + '/ack';
+  var payload = {"user":user,"msgIds":ids};
+  this.send(topic,1,payload);
 }
 
 Action.prototype.register = function() {
@@ -130,7 +136,6 @@ Action.prototype.send = function(topic,qos,payload) {
 
 Action.prototype.regbind = function(){
   var topic = domain + '/reg_bind';
-  console.log("regbind")
   var payload = {"platform":platform,"user":user,"timestamp":Date.now()-PAST,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
   this.send(topic,1,payload);
 }
@@ -148,11 +153,6 @@ Action.prototype.unbind = function(){
   this.send(topic,1,payload);
 }
 
-Action.prototype.ack = function(){
-  var topic = domain + '/ack';
-  var payload = {"user":user,"msgIds":[this.msgId]};
-  this.send(topic,1,payload);
-}
 
 Action.prototype.reconnect = function(){
   var topic = domain + '/reconnect';
