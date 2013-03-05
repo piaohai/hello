@@ -84,7 +84,6 @@ mqtt.createClient(port, host, function(err, client) {
     client.on(events[i], function(packet) {
       if (isDebug()){
         monitor('incr','packet');
-        monitor('decr','packet');
         console.log(packet);
         updateTimestamp(packet);
       }
