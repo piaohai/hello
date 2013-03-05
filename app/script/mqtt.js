@@ -1,11 +1,13 @@
 var mqtt = require('mqttjs');
+var fs = require('fs');
 var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 
 //const data
 var port = 3010;
 //var host = 'localhost';
 var host = '114.113.202.154';
-//var host = '192.168.182.115';
+//var host = '192.168.144.199';
+var fileName = './times';
 var domain = 'blog.163.com';
 var id = Math.random().toString(36).slice(2);
 var deviceId = 'android_' + id;
@@ -17,7 +19,51 @@ var platform = "android";
 var expire_hours = "12";
 var nonce = "abc12f";
 var signature = "OvmK969ardtilq3RCRJIANqj6nM=";
-var PAST = 8 * 60 * 60 * 1000;
+
+var timestamp = '0';
+
+
+var REGISTER = 0;
+var REGBIND = 1;
+var BIND = 2;
+var RECONNECT = 3;
+
+var START = 'start';
+var END = 'end';
+
+
+var monitor = function(type,name,reqId){
+  if (typeof actor!='undefined') {
+    actor.emit(type,name,reqId);
+  } else {
+    console.error(Array.prototype.slice.call(arguments,0));
+  }
+}
+
+var saveTimestamp = function(value) {
+  fs.writeFile(fileName, value, function(err) {
+    if(err) {
+      console.log(err);
+    }
+  })
+}
+
+var updateTimestamp = function(message) {
+  if(!message.topic) {
+    return;
+  }
+  var type = message.topic.split('/')[1];
+  var payload = JSON.parse(message.payload);
+  switch(type) {
+    case 'broadcast':
+    case 'specify':
+      var length = payload.length;
+      timestamp = payload[length - 1]['timestamp'];
+      saveTimestamp(timestamp);
+      break;
+  }
+  
+}
 
 var isDebug = function(){
   if (typeof robot!='undefined'){
@@ -37,18 +83,25 @@ mqtt.createClient(port, host, function(err, client) {
   for (var i = 0; i < events.length; i++) {
     client.on(events[i], function(packet) {
       if (isDebug()){
+        monitor('incr','packet');
+        monitor('decr','packet');
         console.log(packet);
+        updateTimestamp(packet);
       }
       act[packet.cmd].apply(act,[packet]);
     });
   }
   client.connect({keepalive: interval});
   client.on('connack', function(packet) {
-  //setInterval(function() {client.pingreq(); }, Math.round(Math.random()*10)*interval);
   act.register();
-   //setInterval(function(){subscribe(client)},2000);
+  //var self = this;
+  //setTimeout(function(){
+    //act.reconnect();
+  //}, 5000)
  });
 });
+
+
  
 var Action = function(client){
   this.msgId = 1;
@@ -81,17 +134,15 @@ Action.prototype.publish = function(packet){
   var topic = packet.topic;
   var name = topic.substring(topic.indexOf('/')+1,topic.length);
   if (typeof this[name]==='undefined'){
-      console.error(packet);
+      //console.error('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',packet);
       return;
   }
   this[name](JSON.parse(packet.payload));
-  if (packet.qos==1){
-      console.log(' qos = 1');
-  }
 }
 
 
 Action.prototype.registerack = function(payload){
+  monitor(END,'register',REGISTER);
   if (payload.code===200) {
     this.regbind();
   } else {
@@ -123,9 +174,11 @@ Action.prototype.ack = function(ids){
   this.send(topic,1,payload);
 }
 
+ 
 Action.prototype.register = function() {
   var topic = domain + '/register';
   var payload = {"platform":platform,'deviceId':deviceId,"domain":domain,"productKey":productKey};
+  monitor(START,'register',REGISTER);
   this.send(topic,1,payload);
 }
 
@@ -135,14 +188,24 @@ Action.prototype.send = function(topic,qos,payload) {
 }
 
 Action.prototype.regbind = function(){
+  var self = this;
   var topic = domain + '/reg_bind';
-  var payload = {"platform":platform,"user":user,"timestamp":Date.now()-PAST,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
-  this.send(topic,1,payload);
+  fs.readFile(fileName, 'utf-8', function(err, data) {
+    if(err) {
+      console.log('err:', err);
+      return;
+    }
+    monitor(START,'regbind',REGBIND);
+    var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
+    self.send(topic,1,payload);
+  })
+  
 }
  
 
 Action.prototype.bind = function(){
   var topic = domain + '/bind';
+  monitor(START,'bind',BIND);
   var payload = {"platform":platform,"user":user,"expire_hours":12,"signature":signature,"productKey":productKey,'deviceId':deviceId,"domain":domain};
   this.send(topic,1,payload);
 }
@@ -152,15 +215,23 @@ Action.prototype.unbind = function(){
   var payload = {"user":user,"platform":platform,"domain":domain};
   this.send(topic,1,payload);
 }
-
-
+ 
 Action.prototype.reconnect = function(){
+  var self = this;
   var topic = domain + '/reconnect';
-  var payload = {'deviceId':deviceId,"domain":[domain],"timestamp":Date.now()-PAST};
-  this.send(topic,1,payload);
+  fs.readFile(fileName, 'utf-8', function(err, data) {
+    if(err) {
+      console.log('err:', err);
+      return;
+    }
+    monitor(START,'reconnect',RECONNECT);
+    var payload = {'deviceId':deviceId,"domain":[domain],"timestamp": data};
+    self.send(topic,1,payload);
+  })
 }
 
 Action.prototype.bindack = function(payload){
+  monitor(END,'register',BIND);
  if (payload.code>0) {
     //console.log(payload);
     //this.login();
