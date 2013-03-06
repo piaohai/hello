@@ -53,6 +53,7 @@ var updateTimestamp = function(message) {
     return;
   }
   var type = message.topic.split('/')[1];
+  console.log(type + '==============');
   monitor('incr',type);
   var payload = JSON.parse(message.payload);
   switch(type) {
