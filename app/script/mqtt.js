@@ -53,7 +53,6 @@ var updateTimestamp = function(message) {
     return;
   }
   var type = message.topic.split('/')[1];
-  console.log(type + '==============');
   monitor('incr',type);
   var payload = JSON.parse(message.payload);
   switch(type) {
@@ -74,33 +73,45 @@ var isDebug = function(){
   }
 }
 
-mqtt.createClient(port, host, function(err, client) {
-  var act = new Action(client);
-  if (err) {
-    act.emit('error',JSON.stringify(err));
-    console.error(err);
-    return;
-  }
-  for (var i = 0; i < events.length; i++) {
-    client.on(events[i], function(packet) {
-      if (isDebug()){
-        console.log(packet);
-      }
-      updateTimestamp(packet);
-      act[packet.cmd].apply(act,[packet]);
-    });
-  }
-  client.connect({keepalive: interval});
-  client.on('connack', function(packet) {
-  act.register();
-  //var self = this;
-  //setTimeout(function(){
-    //act.reconnect();
-  //}, 5000)
- });
-});
+var retry = 0;
 
+var connect = function (port,host) {
+  mqtt.createClient(port, host, function(err, client) {
+    var act = new Action(client);
+    if (err) {
+      act.emit('error',JSON.stringify(err));
+      console.error(err);
+      setTimeout(function(){
+        if (retry<=10) {
+          connect(port,host);
+        } else {
+          console.error(' over ' + retry + ' times ,quit');
+        }
+        retry++;
+      },5000);
+      return;
+    }
+    for (var i = 0; i < events.length; i++) {
+      client.on(events[i], function(packet) {
+        if (isDebug()){
+          console.log(packet);
+        }
+        updateTimestamp(packet);
+        act[packet.cmd].apply(act,[packet]);
+      });
+    }
+    client.connect({keepalive: interval});
+    client.on('connack', function(packet) {
+    act.register();
+    //var self = this;
+    //setTimeout(function(){
+      //act.reconnect();
+    //}, 5000)
+   });
+  });
+};
 
+connect(port,host);
  
 var Action = function(client){
   this.msgId = 1;
