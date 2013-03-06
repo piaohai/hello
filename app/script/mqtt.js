@@ -203,7 +203,7 @@ Action.prototype.regbind = function(){
   fs.readFile(fileName, 'utf-8', function(err, data) {
     if(err) {
       console.log('err:', err);
-      return;
+      data = 0;
     }
     monitor(START,'regbind',REGBIND);
     var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
