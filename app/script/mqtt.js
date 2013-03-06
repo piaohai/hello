@@ -53,6 +53,7 @@ var updateTimestamp = function(message) {
     return;
   }
   var type = message.topic.split('/')[1];
+  monitor('incr',type);
   var payload = JSON.parse(message.payload);
   switch(type) {
     case 'broadcast':
@@ -83,10 +84,9 @@ mqtt.createClient(port, host, function(err, client) {
   for (var i = 0; i < events.length; i++) {
     client.on(events[i], function(packet) {
       if (isDebug()){
-        monitor('incr','packet');
         console.log(packet);
-        updateTimestamp(packet);
       }
+      updateTimestamp(packet);
       act[packet.cmd].apply(act,[packet]);
     });
   }
