@@ -88,7 +88,7 @@ var connect = function (port,host) {
           console.error(' over ' + retry + ' times ,quit');
         }
         retry++;
-      },5000);
+      },5000 + Math.round(Math.random()*10000));
       return;
     }
     for (var i = 0; i < events.length; i++) {
