@@ -64,7 +64,6 @@ var updateTimestamp = function(message) {
       saveTimestamp(timestamp);
       break;
   }
-  
 }
 
 var isDebug = function(){
