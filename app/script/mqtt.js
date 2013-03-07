@@ -102,6 +102,9 @@ var connect = function (port,host) {
     }
     client.connect({keepalive: interval});
     client.on('connack', function(packet) {
+    //setInterval(function(){
+      //act.register();
+    //}, 5000);
     act.register();
     //var self = this;
     //setTimeout(function(){

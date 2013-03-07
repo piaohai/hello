@@ -13,5 +13,6 @@ results
 
 aws
 times
+log/
 npm-debug.log
 *.sublime-*
