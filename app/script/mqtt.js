@@ -7,13 +7,14 @@ var port = 3010;
 //var host = 'localhost';
 var host = '114.113.202.154';
 //var host = '192.168.144.199';
-var domain = 'blog.163.com';
-var id = Math.random().toString(36).slice(2);
+//Math.random().toString(36).slice(2);
+var id = typeof actor!='undefined'?actor.id:-1;
 var deviceId = 'android_' + id;
-var fileName = './times' + deviceId;
-var user = 'zxc792@163.com';
+var fileName = './times';
+var user = id + 'zxc792@163.com';
 var passed = 'qa1234';
 var interval = 10000;
+var domain = 'blog.163.com';
 var productKey = "94b4b71691a3ee3da605ed4f02696691";
 var platform = "android";
 var expire_hours = "12";
@@ -66,8 +67,8 @@ var updateTimestamp = function(message) {
 }
 
 var isDebug = function(){
-  if (typeof robot!='undefined'){
-    return robot.mode;
+  if (typeof actor!='undefined'){
+    return actor.mode;
   } else {
     return true;
   }
@@ -127,8 +128,8 @@ Action.prototype.subscribe = function(client) {
 
 
 Action.prototype.emit = function(){
-  if (typeof robot!='undefined'){
-    robot.emit(arguments[0],Array.prototype.slice.call(arguments,1));
+  if (typeof actor!='undefined'){
+    actor.emit(arguments[0],Array.prototype.slice.call(arguments,1));
   } else {
     console.error(Array.prototype.slice.call(arguments,1));
   }
