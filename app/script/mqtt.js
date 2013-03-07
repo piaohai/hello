@@ -10,7 +10,7 @@ var host = '114.113.202.154';
 //Math.random().toString(36).slice(2);
 var id = typeof actor!='undefined'?actor.id:-1;
 var deviceId = 'android_' + id;
-var fileName = '/tmp/times' + deviceId;
+var fileName = '/tmp/times';
 var user = id + 'zxc792@163.com';
 //console.log(user + ' ' + fileName);
 var passed = 'qa1234';
@@ -23,7 +23,6 @@ var nonce = "abc12f";
 var signature = "OvmK969ardtilq3RCRJIANqj6nM=";
 
 var timestamp = '0';
-
 
 var REGISTER = 0;
 var REGBIND = 1;
