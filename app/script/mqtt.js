@@ -45,7 +45,6 @@ var monitor = function(type,name,reqId){
 var saveTimestamp = function(value) {
   fs.writeFile(fileName, value, function(err) {
     if(err) {
-      console.log('save' + err);
     }
   })
 }
@@ -55,7 +54,7 @@ var updateTimestamp = function(message) {
     return;
   }
   var type = message.topic.split('/')[1];
-  monitor('incr',type);
+ 
   var payload = JSON.parse(message.payload);
   switch(type) {
     case 'broadcast':
@@ -82,7 +81,6 @@ var connect = function (port,host) {
     var act = new Action(client);
     if (err) {
       act.emit('error',JSON.stringify(err));
-      console.error(err);
       setTimeout(function(){
         if (retry<=10) {
           connect(port,host);
@@ -104,15 +102,8 @@ var connect = function (port,host) {
     }
     client.connect({keepalive: interval});
     client.on('connack', function(packet) {
-    //setInterval(function(){
-      //act.register();
-    //}, 5000);
-    act.register();
-    //var self = this;
-    //setTimeout(function(){
-      //act.reconnect();
-    //}, 5000)
-   });
+      act.register();
+    });
   });
 };
 
@@ -156,15 +147,6 @@ Action.prototype.publish = function(packet){
 }
 
 
-Action.prototype.registerack = function(payload){
-  if (payload.code===200) {
-    monitor(END,'register',REGISTER);
-    this.regbind();
-  } else {
-    this.emit('error','registerack code ' + payload.code);
-  }
-}
-
 
 Action.prototype.pubcomp = function(packet){
 
@@ -194,8 +176,21 @@ Action.prototype.register = function() {
   var topic = domain + '/register';
   var payload = {"platform":platform,'deviceId':deviceId,"domain":domain,"productKey":productKey};
   monitor(START,'register',REGISTER);
+  monitor('incr','register');
   this.send(topic,1,payload);
 }
+
+
+Action.prototype.registerack = function(payload){
+  monitor(END,'register',REGISTER);
+  monitor('incr','registerack');
+  if (payload.code===200) {
+    this.regbind();
+  } else {
+    this.emit('error','registerack code ' + payload.code);
+  }
+}
+
 
 Action.prototype.send = function(topic,qos,payload) {
   this.msgId++;
@@ -207,7 +202,6 @@ Action.prototype.regbind = function(){
   var topic = domain + '/reg_bind';
   fs.readFile(fileName, 'utf-8', function(err, data) {
     if(err) {
-      console.log('err:', err);
       data = 0;
     }
     monitor(START,'regbind',REGBIND);
