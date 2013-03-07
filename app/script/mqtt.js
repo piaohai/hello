@@ -12,7 +12,7 @@ var id = typeof actor!='undefined'?actor.id:-1;
 var deviceId = 'android_' + id;
 var fileName = '/tmp/times' + deviceId;
 var user = id + 'zxc792@163.com';
-console.log(user + ' ' + fileName);
+//console.log(user + ' ' + fileName);
 var passed = 'qa1234';
 var interval = 10000;
 var domain = 'blog.163.com';
