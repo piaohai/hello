@@ -60,7 +60,7 @@ var updateTimestamp = function(message) {
     case 'specify':
       var length = payload.length;
       timestamp = payload[length - 1]['timestamp'];
-      saveTimestamp(timestamp);
+      //saveTimestamp(timestamp);
       break;
   }
 }
@@ -198,15 +198,17 @@ Action.prototype.send = function(topic,qos,payload) {
 Action.prototype.regbind = function(){
   var self = this;
   var topic = domain + '/reg_bind';
-  fs.readFile(fileName, 'utf-8', function(err, data) {
-    if(err) {
-      data = 0;
-    }
-    monitor(START,'regbind',REGBIND);
-    var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
-    self.send(topic,1,payload);
-  })
-  
+  // fs.readFile(fileName, 'utf-8', function(err, data) {
+  //   if(err) {
+  //     data = 0;
+  //   }
+  //   monitor(START,'regbind',REGBIND);
+  //   var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
+  //   self.send(topic,1,payload);
+  // })
+  monitor(START,'regbind',REGBIND);
+  var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
+  self.send(topic,1,payload);
 }
  
 
