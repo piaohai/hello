@@ -207,6 +207,7 @@ Action.prototype.regbind = function(){
   //   self.send(topic,1,payload);
   // })
   monitor(START,'regbind',REGBIND);
+  var data = 0;
   var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
   self.send(topic,1,payload);
 }
