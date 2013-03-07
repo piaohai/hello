@@ -10,8 +10,9 @@ var host = '114.113.202.154';
 //Math.random().toString(36).slice(2);
 var id = typeof actor!='undefined'?actor.id:-1;
 var deviceId = 'android_' + id;
-var fileName = './times';
+var fileName = '/tmp/times' + deviceId;
 var user = id + 'zxc792@163.com';
+console.log(user + ' ' + fileName);
 var passed = 'qa1234';
 var interval = 10000;
 var domain = 'blog.163.com';
@@ -44,7 +45,7 @@ var monitor = function(type,name,reqId){
 var saveTimestamp = function(value) {
   fs.writeFile(fileName, value, function(err) {
     if(err) {
-      console.log(err);
+      console.log(''err);
     }
   })
 }
@@ -156,8 +157,8 @@ Action.prototype.publish = function(packet){
 
 
 Action.prototype.registerack = function(payload){
-  monitor(END,'register',REGISTER);
   if (payload.code===200) {
+    monitor(END,'register',REGISTER);
     this.regbind();
   } else {
     this.emit('error','registerack code ' + payload.code);
@@ -235,7 +236,7 @@ Action.prototype.reconnect = function(){
   var topic = domain + '/reconnect';
   fs.readFile(fileName, 'utf-8', function(err, data) {
     if(err) {
-      console.log('err:', err);
+      //console.log('err:', err);
       return;
     }
     monitor(START,'reconnect',RECONNECT);
@@ -245,8 +246,8 @@ Action.prototype.reconnect = function(){
 }
 
 Action.prototype.bindack = function(payload){
-  monitor(END,'register',BIND);
  if (payload.code>0) {
+    monitor(END,'regbind',REGBIND);
     //console.log(payload);
     //this.login();
   } else {
