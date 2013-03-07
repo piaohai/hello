@@ -33,7 +33,6 @@ var RECONNECT = 3;
 var START = 'start';
 var END = 'end';
 
-
 var monitor = function(type,name,reqId){
   if (typeof actor!='undefined') {
     actor.emit(type,name,reqId);
@@ -44,10 +43,11 @@ var monitor = function(type,name,reqId){
 
 var saveTimestamp = function(value) {
   fs.writeFile(fileName, value, function(err) {
-    if(err) {
-    }
   })
 }
+
+var exists = fs.existsSync(fileName);
+if (!exists) { saveTimestamp(0);}
 
 var updateTimestamp = function(message) {
   if(!message.topic) {
@@ -82,14 +82,12 @@ var connect = function (port,host) {
     if (err) {
       act.emit('error',JSON.stringify(err));
       setTimeout(function(){
-        if (retry<=10) {
+        if (retry<=100) {
           connect(port,host);
-        } else {
-          console.error(' over ' + retry + ' times ,quit');
-        }
+        } 
+        console.error(' over ' + retry + ' times ');
         retry++;
-      },5000 + Math.round(Math.random()*10000));
-      return;
+      },5000 + Math.round(Math.random()*5000));
     }
     for (var i = 0; i < events.length; i++) {
       client.on(events[i], function(packet) {
