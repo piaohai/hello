@@ -45,7 +45,7 @@ var monitor = function(type,name,reqId){
 var saveTimestamp = function(value) {
   fs.writeFile(fileName, value, function(err) {
     if(err) {
-      console.log(''err);
+      console.log('save' + err);
     }
   })
 }
