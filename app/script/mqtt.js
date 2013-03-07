@@ -9,7 +9,6 @@ var host = '114.113.202.154';
 //var host = '192.168.144.199';
 //Math.random().toString(36).slice(2);
 var id = typeof actor!='undefined'?actor.id:-1;
-console.log(actor.id);
 var deviceId = 'android_' + id;
 var fileName = '/tmp/times' + deviceId;
 var user = id + 'zxc792@163.com';
