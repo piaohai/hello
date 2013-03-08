@@ -246,7 +246,3 @@ Action.prototype.bindack = function(payload){
       this.emit('error','registerack code ' + payload.code);
   }
 }
-
-process.on('uncaughtException', function(err) {
-  console.error(' Caught exception: ' + err.stack);
-});
