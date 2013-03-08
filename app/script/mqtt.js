@@ -81,13 +81,13 @@ var connect = function (port,host) {
     if (err) {
       act.emit('error',JSON.stringify(err));
       console.log(err);
-      // setTimeout(function(){
-      //   if (retry<=100) {
-      //     connect(port,host);
-      //   } 
-      //   console.error(' over ' + retry + ' times ');
-      //   retry++;
-      // },5000 + Math.round(Math.random()*5000));
+      setTimeout(function(){
+        if (retry<=100) {
+          connect(port,host);
+        } 
+        console.error(' over ' + retry + ' times ');
+        retry++;
+      },5000 + Math.round(Math.random()*5000));
     }
     for (var i = 0; i < events.length; i++) {
       client.on(events[i], function(packet) {
