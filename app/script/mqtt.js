@@ -48,9 +48,6 @@ var saveTimestamp = function(value) {
   })
 }
 
-var exists = fs.existsSync(fileName);
-if (!exists) { saveTimestamp(0);}
-
 var updateTimestamp = function(message) {
   if(!message.topic) {
     return;
