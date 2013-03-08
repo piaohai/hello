@@ -22,7 +22,10 @@ var expire_hours = "12";
 var nonce = "abc12f";
 var signature = "OvmK969ardtilq3RCRJIANqj6nM=";
 
-var timestamp = '0';
+var timestamp = 0;
+var retry = 0;
+var isFirst = true;
+var lastTimeOut = 0;
 
 var REGISTER = 0;
 var REGBIND = 1;
@@ -73,34 +76,45 @@ var isDebug = function(){
   }
 }
 
-var retry = 0;
+
 
 var connect = function (port,host) {
   mqtt.createClient(port, host, function(err, client) {
     var act = new Action(client);
     if (err) {
       act.emit('error',JSON.stringify(err));
-      console.log(err);
+      lastTimeOut += Math.round(Math.random()*10000);
       setTimeout(function(){
-        if (retry<=100) {
+        if (retry<=100000) {
           connect(port,host);
         } 
-        console.error(' over ' + retry + ' times ');
+        console.error(' over ' + retry + ' times ' + lastTimeOut);
         retry++;
-      },5000 + Math.round(Math.random()*5000));
+      },lastTimeOut);
+      return;
     }
+    client.on('close',function(event){
+      connect(port,host);
+    })
     for (var i = 0; i < events.length; i++) {
       client.on(events[i], function(packet) {
+        if (!packet) return;
         if (isDebug()){
-          console.log(packet);
+          //console.log(packet);
         }
         updateTimestamp(packet);
-        act[packet.cmd].apply(act,[packet]);
+        if (!!act[packet.cmd]) {
+          act[packet.cmd].apply(act,[packet]);
+        }
       });
     }
     client.connect({keepalive: interval});
     client.on('connack', function(packet) {
-      act.register();
+      if (!!isFirst) {
+        act.register();
+      } else {
+        act.reconnect();
+      }
     });
   });
 };
@@ -171,6 +185,7 @@ Action.prototype.ack = function(ids){
 
  
 Action.prototype.register = function() {
+  isFirst = false;
   var topic = domain + '/register';
   var payload = {"platform":platform,'deviceId':deviceId,"domain":domain,"productKey":productKey};
   monitor(START,'register',REGISTER);
@@ -198,17 +213,8 @@ Action.prototype.send = function(topic,qos,payload) {
 Action.prototype.regbind = function(){
   var self = this;
   var topic = domain + '/reg_bind';
-  // fs.readFile(fileName, 'utf-8', function(err, data) {
-  //   if(err) {
-  //     data = 0;
-  //   }
-  //   monitor(START,'regbind',REGBIND);
-  //   var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
-  //   self.send(topic,1,payload);
-  // })
   monitor(START,'regbind',REGBIND);
-  var data = 0;
-  var payload = {"platform":platform,"user":user,"timestamp":data ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
+  var payload = {"platform":platform,"user":user,"timestamp":timestamp ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
   self.send(topic,1,payload);
 }
  
@@ -229,15 +235,9 @@ Action.prototype.unbind = function(){
 Action.prototype.reconnect = function(){
   var self = this;
   var topic = domain + '/reconnect';
-  fs.readFile(fileName, 'utf-8', function(err, data) {
-    if(err) {
-      //console.log('err:', err);
-      return;
-    }
-    monitor(START,'reconnect',RECONNECT);
-    var payload = {'deviceId':deviceId,"domain":[domain],"timestamp": data};
-    self.send(topic,1,payload);
-  })
+  monitor(START,'reconnect',RECONNECT);
+  var payload = {'deviceId':deviceId,"domain":[domain],"timestamp": timestamp};
+  self.send(topic,1,payload);
 }
 
 Action.prototype.bindack = function(payload){
@@ -249,3 +249,7 @@ Action.prototype.bindack = function(payload){
       this.emit('error','registerack code ' + payload.code);
   }
 }
+
+process.on('uncaughtException', function(err) {
+  console.error(' Caught exception: ' + err.stack);
+});
