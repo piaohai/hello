@@ -1,5 +1,5 @@
 {
   "master":{"host": "ec2-54-248-60-101.ap-northeast-1.compute.amazonaws.com","port":8888,"webport":8889},
-  "apps":{"host":"114.113.202.154","port":3010,"interval":200},
+  "apps":{"host":"114.113.202.154","port":3010,"interval":300},
   "clients":["127.0.0.1"]
 }
