@@ -3,7 +3,7 @@ var fs = require('fs');
 var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 
 //const data
-var port = 8080;
+var port = 3010;
 //var host = 'localhost';
 var host = '114.113.202.154';
 //var host = '192.168.144.199';
