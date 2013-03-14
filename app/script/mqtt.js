@@ -8,7 +8,7 @@ var port = 3010;
 var host = '114.113.202.154';
 //var host = '192.168.144.199';
 //Math.random().toString(36).slice(2);
-var id = typeof actor!='undefined'?actor.id:-1;
+var id = typeof actor!='undefined'?actor.id:-2;
 var deviceId = 'android_' + id;
 var fileName = '/tmp/times';
 var user = id + 'zxc792@163.com';
@@ -105,7 +105,8 @@ var connect = function (port,host) {
         }
       });
     }
-    client.connect({keepalive: interval});
+    client.connect({keepalive: interval, will: {topic: "verify",payload:JSON.stringify({key: "6a60565dc2b2f914ff104de34c06b37b"})}, qos: 1});
+    //client.connect({keepalive: interval});
     client.on('connack', function(packet) {
       if (!!isFirst) {
         act.register();
