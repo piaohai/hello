@@ -45,14 +45,15 @@ http.createServer(function (req, res) {
             }
             return res.end(JSON.stringify(config) + "\n");
 
-        } else if (url.pathname === '/stop') {
-            // Restart process on '/restart'
+        } else if (url.pathname === '/restart') {
             require('child_process').exec("sudo restart client", function() {});
             return res.end("OK\n");
         }  else if (url.pathname === '/pull') {
-            // Restart process on '/restart'
             require('child_process').exec("cd /home/ubuntu/hello && git pull ", function() {});
             return res.end("OK\n");
+        } else if (url.pathname === '/stop') {
+            setTimeout(function(){process.exit(0)},1000);
+            return res.end("HTTP SERVER CLOSE OK\n");
         } else if (url.pathname === '/reset') {
             return res.end(ok);
         } else if (url.pathname === '/start') {
@@ -63,12 +64,13 @@ http.createServer(function (req, res) {
     }
     res.writeHead(404);
     res.end("<h1>404<h1>\n");
-}).listen(5555);
+}).listen(config.master.cwebport);
 
-
+console.log(' http server start at port '  + config.master.cwebport)
 
 process.on('uncaughtException', function(err) {
   console.error(' Caught exception: ' + err.stack);
+  fs.appendFile('/tmp/log',err.stack,'utf8');
   if (robots.length>0){
     robots[1].agent.socket.emit('crash',err.stack);
   }
