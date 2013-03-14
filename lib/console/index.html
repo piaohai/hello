@@ -78,8 +78,7 @@
 				<div class="bar">
 					<span class="screen-label">Summary</span>
 					<div class="bar-top-right">
-						<div class="screen-buttons">
-							<input type="button" class="add-button" id='sumbtn' value='ShowDetail'>&nbsp;<img style='display:none' id='table_img'
+						<div class="screen-buttons"><img  id='table_img'
 								src="/images/icons/cross.png" title="Close Screen" />
 						</div>
 						<div class="screen-search">
@@ -103,48 +102,10 @@
 						</tbody>
 					</table>
 				</div>
-				
-			</div>
-			
-			<div id='summary_div' style='display:none'></div>
-			<div class="screen history" id="avg_div2" style="height:246px">
-				<div class="bar">
-					<span class="screen-label">Response Time Graph</span>
-					<div class="bar-top-right">
-						<div class="screen-buttons"><input type="button" class="add-button"
-									id='avgbtn' value='ShowDetail'>&nbsp;<img id='avg_img'  style='display:none'
-								src="/images/icons/cross.png" title="Close Screen" />
-						</div>
-						<div class="screen-search">
-							<a href="#" class="result-count"></a>
-						</div>
-					</div>
-				</div>
-				<div class="console">
-					<div id="avgrestime"></div>
-				</div>
 			</div>
 
-			<div id='avg_div'  style='display:none'></div>
-			<div class="screen history" id="qs_div2" style="height:246px">
-				<div class="bar">
-					<span class="screen-label">Qps Graph</span>
-					<div class="bar-top-right">
-						<div class="screen-buttons"><input type="button" class="add-button"
-									id='qsbtn' value='ShowDetail'>&nbsp;<img id='qs_img'  style='display:none'
-								src="/images/icons/cross.png" title="Close Screen" />
-						</div>
-						<div class="screen-search">
-							<a href="#" class="result-count"></a>
-						</div>
-					</div>
-				</div>
-				<div class="console">
-					<div id="qstime"></div>
-				</div>
-			</div>
+			<div id='graph_div'></div> 
 			
-			<div id='qs_div'  style='display:none'></div>
 			<div id="bottom">
 			<div id="bottom2">
 				<div id="stats">
@@ -170,7 +131,6 @@
 					<span class="screen-label">Summary</span>
 					<div class="bar-top-right">
 						<div class="screen-buttons">
-							<a class="button close" href="#"></a>
 						</div>
 						<div class="screen-search">
 							<a href="#" class="result-count"></a>
@@ -195,13 +155,13 @@
 				</div>
 			</div>
 			<!--table_template  -->
-			
-			<div class="screen history" id="avg_template" style="height:246px;">
+			 
+ 			<div class="screen history" id="avg_template" style="height:246px">
 				<div class="bar">
-					<span class="screen-label">Request Time Graph</span>
+					<span class="screen-label">Response Time Graph</span>
 					<div class="bar-top-right">
-						<div class="screen-buttons">
-							<a class="button" href="#"></a>
+						<div class="screen-buttons"><img class='closebtn'
+						src="/images/icons/cross.png" title="Close Screen" />
 						</div>
 						<div class="screen-search">
 							<a href="#" class="result-count"></a>
@@ -209,7 +169,7 @@
 					</div>
 				</div>
 				<div class="console">
-					<div class="avgrestime"></div>
+					<div class='cgraphdiv'></div>
 				</div>
 			</div>
 			
