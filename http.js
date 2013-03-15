@@ -70,8 +70,5 @@ console.log(' http server start at port '  + config.master.cwebport)
 
 process.on('uncaughtException', function(err) {
   console.error(' Caught exception: ' + err.stack);
-  fs.appendFile('/tmp/log',err.stack,'utf8');
-  if (robots.length>0){
-    robots[1].agent.socket.emit('crash',err.stack);
-  }
+  fs.writeFileSync('/tmp/log',err.stack,'utf8');
 });
