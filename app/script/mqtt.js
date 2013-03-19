@@ -3,15 +3,15 @@ var fs = require('fs');
 var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 
 //const data
-var port = 3010;
+var port = 6002;
 //var host = 'localhost';
-var host = '114.113.202.154';
+var host = '123.58.180.77';
 //var host = '192.168.144.199';
 //Math.random().toString(36).slice(2);
 var id = typeof actor!='undefined'?actor.id:-2;
 var deviceId = 'android_' + id;
 var fileName = '/tmp/times';
-var user = id + 'zxc792@163.com';
+var user = 'zxc792@163.com';
 //console.log(user + ' ' + fileName);
 var passed = 'qa1234';
 var interval = 10000;
@@ -20,7 +20,7 @@ var productKey = "94b4b71691a3ee3da605ed4f02696691";
 var platform = "android";
 var expire_hours = "12";
 var nonce = "abc12f";
-var signature = "OvmK969ardtilq3RCRJIANqj6nM=";
+var signature = "NnNMjd6/cfSe/zmEAz9ABhlKqP4=";
 
 var timestamp = 0;
 var retry = 0;
@@ -97,7 +97,7 @@ var connect = function (port,host) {
       client.on(events[i], function(packet) {
         if (!packet) return;
         if (isDebug()){
-          //console.log(packet);
+          console.log(packet);
         }
         updateTimestamp(packet);
         if (!!act[packet.cmd]) {
