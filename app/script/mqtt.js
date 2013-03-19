@@ -59,6 +59,7 @@ var updateTimestamp = function(message) {
     case 'broadcast':
     case 'specify':
       var length = payload.length;
+      monitor('incr',type);
       timestamp = payload[length - 1]['timestamp'];
       //saveTimestamp(timestamp);
       break;
