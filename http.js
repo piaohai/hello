@@ -1,9 +1,10 @@
 var http = require('http');
 var envConfig = require('./app/config/env.json');
 var config = require('./app/config/'+envConfig.env+'/config');
-
+var index = __filename.lastIndexOf('/');
+var path = __filename.substring(0,index);
 var run = function(num){
-    var args = " node app.js client ";
+    var args = " node " + path + "/app.js client ";
     for (var i = 0 ;i < num;i++) {
         require('child_process').exec(args, function(err, data){});
     }
