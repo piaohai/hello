@@ -14,7 +14,7 @@ var fileName = '/tmp/times';
 var user = 'zxc792@163.com';
 //console.log(user + ' ' + fileName);
 var passed = 'qa1234';
-var interval = 10000;
+var interval = 20000;
 var domain = 'blog.163.com';
 var productKey = "94b4b71691a3ee3da605ed4f02696691";
 var platform = "android";
