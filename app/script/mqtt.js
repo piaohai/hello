@@ -1,18 +1,13 @@
 var mqtt = require('mqttjs');
-var fs = require('fs');
 var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 
-//const data
 var port = 6002;
-//var host = 'localhost';
 var host = '123.58.180.77';
-//var host = '192.168.144.199';
 //Math.random().toString(36).slice(2);
 var id = typeof actor!='undefined'?actor.id:-2;
 var deviceId = 'android_' + id;
 var fileName = '/tmp/times';
 var user = 'zxc792@163.com';
-//console.log(user + ' ' + fileName);
 var passed = 'qa1234';
 var interval = 20000;
 var domain = 'blog.163.com';
@@ -43,11 +38,6 @@ var monitor = function(type,name,reqId){
   }
 }
 
-var saveTimestamp = function(value) {
-  fs.writeFile(fileName, value, function(err) {
-  })
-}
-
 var updateTimestamp = function(message) {
   if(!message.topic) {
     return;
@@ -61,7 +51,6 @@ var updateTimestamp = function(message) {
       var length = payload.length;
       monitor('incr',type);
       timestamp = payload[length - 1]['timestamp'];
-      //saveTimestamp(timestamp);
       break;
   }
 }
@@ -80,7 +69,7 @@ var connect = function (port,host) {
   mqtt.createClient(port, host, function(err, client) {
     var act = new Action(client);
     if (err) {
-      act.emit('error',JSON.stringify(err));
+      monitor('incr','conn ' + payload.code);
       lastTimeOut += Math.round(Math.random()*10000);
       setTimeout(function(){
         if (retry<=100000) {
@@ -97,9 +86,9 @@ var connect = function (port,host) {
     for (var i = 0; i < events.length; i++) {
       client.on(events[i], function(packet) {
         if (!packet) return;
-        if (isDebug()){
-          console.log(packet);
-        }
+        //if (isDebug()){
+          //console.log(packet);
+        //}
         updateTimestamp(packet);
         if (!!act[packet.cmd]) {
           act[packet.cmd].apply(act,[packet]);
@@ -129,15 +118,7 @@ Action.prototype.subscribe = function(client) {
   client.subscribe({messageId: msgId, subscriptions: [{topic: 'shit', qos: 1}]});
 }
 
-
-Action.prototype.emit = function(){
-  if (typeof actor!='undefined'){
-    actor.emit(arguments[0],Array.prototype.slice.call(arguments,1));
-  } else {
-    console.error(Array.prototype.slice.call(arguments,1));
-  }
-}
-
+ 
 
 Action.prototype.connack = function(packet){
 
@@ -199,7 +180,7 @@ Action.prototype.registerack = function(payload){
   if (payload.code===200) {
     this.regbind();
   } else {
-    this.emit('error','registerack code ' + payload.code);
+    monitor('incr','incr ' + payload.code);
   }
 }
 
@@ -245,6 +226,6 @@ Action.prototype.bindack = function(payload){
     //console.log(payload);
     //this.login();
   } else {
-      this.emit('error','registerack code ' + payload.code);
+    monitor('incr','incr ' + payload.code);
   }
 }
