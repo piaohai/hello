@@ -195,7 +195,7 @@ Action.prototype.regbind = function(){
   var self = this;
   var topic = domain + '/reg_bind';
   monitor(START,'regbind',REGBIND);
-  var payload = {"platform":platform,"user":user,"timestamp":timestamp ,"expire_hours":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
+  var payload = {"platform":platform,"user":user,"timestamp":timestamp ,"expire_time":12,"nonce":nonce,"signature":signature,"productKey":productKey,"deviceId":deviceId,"domain":domain};
   self.send(topic,1,payload);
 }
  
@@ -203,7 +203,7 @@ Action.prototype.regbind = function(){
 Action.prototype.bind = function(){
   var topic = domain + '/bind';
   monitor(START,'bind',BIND);
-  var payload = {"platform":platform,"user":user,"expire_hours":12,"signature":signature,"productKey":productKey,'deviceId':deviceId,"domain":domain};
+  var payload = {"platform":platform,"user":user,"expire_time":12,"signature":signature,"productKey":productKey,'deviceId':deviceId,"domain":domain};
   this.send(topic,1,payload);
 }
 
