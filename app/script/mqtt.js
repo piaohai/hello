@@ -13,7 +13,7 @@ var interval = 20000;
 var domain = 'blog.163.com';
 var productKey = "94b4b71691a3ee3da605ed4f02696691";
 var platform = "android";
-var expire_hours = "12";
+var expire_time = "12";
 var nonce = "abc12f";
 var signature = "NnNMjd6/cfSe/zmEAz9ABhlKqP4=";
 
@@ -69,12 +69,13 @@ var connect = function (port,host) {
   mqtt.createClient(port, host, function(err, client) {
     var act = new Action(client);
     if (err) {
-      monitor('incr','conn ' + payload.code);
+      monitor('incr','connerror');
       lastTimeOut += Math.round(Math.random()*10000);
       setTimeout(function(){
         if (retry<=100000) {
           connect(port,host);
-        } 
+        }
+        monitor('incr','reconnect'); 
         console.error(' over ' + retry + ' times ' + lastTimeOut);
         retry++;
       },lastTimeOut);
