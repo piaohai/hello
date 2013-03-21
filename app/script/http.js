@@ -56,7 +56,7 @@ var monitor = function(type,name,reqId){
 function makeRequest(vid) {
     monitor('incr','inproc');
     monitor('incr','req');
-    monitor('Start','get',vid);
+    monitor('start','get',vid);
     var req = http.request(options);
     req.setNoDelay();
     req.on('response', function(res) {
@@ -67,7 +67,7 @@ function makeRequest(vid) {
           console.log('BODY: ' + chunk);
         });
         res.on('end', function() {
-            monitor('End','get',vid);
+            monitor('end','get',vid);
             monitor('decr','req');
             monitor('decr','inproc');
         });
