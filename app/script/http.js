@@ -1,6 +1,6 @@
 var http = require('http');
 
-var host = "www.163.com";
+var host = "push.netease.com";
 
 var domain = 'blog.163.com';
 var productKey = "94b4b71691a3ee3da605ed4f02696691";
