@@ -87,7 +87,7 @@ function makeRequest(vid) {
 
 setInterval(function(){
     makeRequest(vid++);
-},1000);
+},10);
  
 
         
