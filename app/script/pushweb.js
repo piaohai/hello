@@ -239,7 +239,8 @@ var http = require('http');
   //host = 'fkmm8.photo.163.org';
   var port = 6003;
   //port = 3031;
-  var user = 'testvvv';
+  var id = typeof actor!='undefined'?actor.id:-2;
+  var user = 'testvvv' + id;
   var username = user;
 
   var login_url = "http://123.58.180.180:8080/test/login/index?account="+ user;
