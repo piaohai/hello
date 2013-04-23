@@ -32,7 +32,7 @@ var http = require('http');
    * @memberOf pomelo
    */
   pomelo.init = function(host, port, cb) {
-    var url = 'ht://' + host;
+    var url = 'ws://' + host;
     if (port) {
       url += ':' + port;
     }
@@ -187,7 +187,6 @@ var http = require('http');
    */
   pomelo.bind = function(opts, cb) {
     if (isRegister) {
-      console.log('!!!');
       request('bind', opts, cb);
     } else {
       console.log('cannot bind without registration.');
@@ -239,8 +238,8 @@ var http = require('http');
   //host = 'fkmm8.photo.163.org';
   var port = 6003;
   //port = 3031;
-  var id = typeof actor!='undefined'?actor.id:-2;
-  var user = 'testvvv' + id;
+  var uid = typeof actor!='undefined'?actor.id:-2;
+  var user = 'testvvv' + uid;
   var username = user;
 
   var login_url = "http://123.58.180.180:8080/test/login/index?account="+ user;
