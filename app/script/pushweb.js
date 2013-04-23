@@ -2,6 +2,14 @@ var EventEmitter = require('events').EventEmitter;
 var io = require('socket.io-client');
 var http = require('http');
 
+var monitor = function(type,name,reqId){
+  if (typeof actor!='undefined') {
+    actor.emit(type,name,reqId);
+  } else {
+    console.error(Array.prototype.slice.call(arguments,0));
+  }
+}
+
 
 (function() {
   if (typeof Object.create !== 'function') {
@@ -259,11 +267,13 @@ var http = require('http');
 
 
   var reg = function() {
+      monitor('start','register',2);
       pomelo.register({
                 domain: domain,
                 productKey: productKey
               }, function(data) {
                 if (data.code === success) {
+                monitor('end','register',2);
                 var req = http.get(login_url,function(res){
                   res.on('data',bindx.bind(this));
                   req.on('error',function(data){
@@ -280,9 +290,11 @@ var http = require('http');
                   var expire_time = data.split("&")[1].split("=")[1];
                   var signature = data.split("&")[2].substring(10);
                   var msg = {user: user, nonce: nonce, expire_time: expire_time, signature: signature, domain: domain, productKey: productKey };
+                   monitor('start','bind',1);
                   pomelo.bind(msg,function(data) {
                     console.log(data);
                     if (data.code === success) {
+                      monitor('end','bind',1);
                       //messageRequest(timestamp, 0);
                       usersRequest();
                       setUpdateInterval(update_time);
@@ -355,15 +367,6 @@ function usersRequest() {
       usersRequest();
     }, time);
   };
-
-var monitor = function(type,name,reqId){
-  if (typeof actor!='undefined') {
-    actor.emit(type,name,reqId);
-  } else {
-    console.error(Array.prototype.slice.call(arguments,0));
-  }
-}
-
 })();
 
 
