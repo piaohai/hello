@@ -238,7 +238,7 @@ var http = require('http');
   //host = 'fkmm8.photo.163.org';
   var port = 6003;
   //port = 3031;
-  var uid = typeof actor!='undefined'?actor.id:-2;
+  var uid = typeof actor!='undefined'?actor.id:-33;
   var user = 'testvvv' + uid;
   var username = user;
 
@@ -266,12 +266,14 @@ var http = require('http');
               }, function(data) {
                 if (data.code === success) {
                 monitor('end','register',2);
-                var req = http.get(login_url,function(res){
-                  res.on('data',bindx.bind(this));
-                  req.on('error',function(data){
-                    console.log(data);
-                  });
-                });
+                isRegister = true;
+                bind2('nA8vcgDWYgYiHkKG','1366883049608','xzm0sznKKF1t5EO8bUyc7Oo4Sr0=');
+                // var req = http.get(login_url,function(res){
+                //   res.on('data',bindx.bind(this));
+                //   req.on('error',function(data){
+                //     console.log(data);
+                //   });
+                // });
             }
          });
   }
@@ -281,6 +283,12 @@ var http = require('http');
                   var nonce = data.split("&")[0].split("=")[1];
                   var expire_time = data.split("&")[1].split("=")[1];
                   var signature = data.split("&")[2].substring(10);
+                  bindx(nonce,expire_time,signature);
+  };
+  
+
+  var bind2 = function(nonce,expire_time,signature){
+                  console.log(nonce + ' ' + expire_time+ ' ' + signature);
                   var msg = {user: user, nonce: nonce, expire_time: expire_time, signature: signature, domain: domain, productKey: productKey };
                   monitor('start','bind',1);
                   pomelo.bind(msg,function(data) {
