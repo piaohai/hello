@@ -296,7 +296,7 @@ var http = require('http');
                     if (data.code === success) {
                       monitor('end','bind',1);
                       //messageRequest(timestamp, 0);
-                      usersRequest();
+                      //usersRequest();
                       setUpdateInterval(update_time);
                       isLogined = true;
                       return;
@@ -364,7 +364,7 @@ function usersRequest() {
 
   function setUpdateInterval(time) {
     setInterval(function() {
-      usersRequest();
+      //usersRequest();
     }, time);
   };
 
