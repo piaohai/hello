@@ -301,7 +301,7 @@ var http = require('http');
                       isLogined = true;
                       return;
                     } else {
-                      alert('cannot bind user account.');
+                      //alert('cannot bind user account.');
                       return;
                     }
                   });
