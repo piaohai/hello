@@ -329,15 +329,16 @@ var http = require('http');
           friendsId.push(from);
           usersRequest();
         }
-        var target = message.user;
-        var msg = message.content;
-        addMessage(true, msg, from, target);
-        $("#chatHistory").show();
+        //var target = message.user;
+        //var msg = message.content;
+        //addMessage(true, msg, from, target);
+        //$("#chatHistory").show();
       }
     });
   };
 
 function usersRequest() {
+  return ;
   pomelo_client.getOnlineUser({
     domain: domain,
     ids: friendsId
