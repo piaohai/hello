@@ -129,7 +129,6 @@ var http = require('http');
     for (var i = 0, l = msgs.length; i < l; i++) {
       processMessage(msgs[i]);
     }
-    return;
     for (var key in message_store) {
       console.log('ssssssssss' + key);
       pomelo.emit(key, message_store[key]);
@@ -164,6 +163,7 @@ var http = require('http');
     }
     //if no id then it should be a server push message
     else {
+      monitor('incr',msg.route);
       if (!message_store[msg.route]) message_store[msg.route] = [msg.body];
       else {
         var arr = message_store[msg.route];
@@ -368,7 +368,6 @@ function usersRequest() {
   pomelo_client.on('broadcast', function(data) {
     console.log("bbbbbbbbbbbbbb" + data);
     if (isLogined) {
-      monitor('incr','broadcast');
       var data = JSON.parse(data.content);
       console.log(data);
     } else {
