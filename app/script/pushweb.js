@@ -53,6 +53,7 @@ var http = require('http');
     // receive socket message
     socket.on('message', function(data) {
       console.log(data);
+      try {
       if (typeof data === 'string') {
         data = JSON.parse(data);
       }
@@ -60,6 +61,8 @@ var http = require('http');
         processMessageBatch(data);
       } else {
         processMessage(data);
+      } } catch(ex){
+        console.log(ex);
       }
     });
 
