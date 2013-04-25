@@ -57,7 +57,8 @@ var http = require('http');
       if (typeof data === 'string') {
         data = JSON.parse(data);
       }
-      if (data instanceof Array) {
+       console.log('dddddd' + data);
+       if (data instanceof Array) {
         processMessageBatch(data);
       } else {
         processMessage(data);
@@ -111,7 +112,11 @@ var http = require('http');
       msg: msg
     };
     var sg = JSON.stringify(rs);
-    socket.send(sg);
+    try {
+      socket.send(sg); 
+    } catch(ex) {
+      console.log('send error');
+    }
   };
 
   /**
@@ -124,7 +129,9 @@ var http = require('http');
     for (var i = 0, l = msgs.length; i < l; i++) {
       processMessage(msgs[i]);
     }
+    return;
     for (var key in message_store) {
+      console.log('ssssssssss' + key);
       pomelo.emit(key, message_store[key]);
     }
     message_store = {};
@@ -239,6 +246,7 @@ var http = require('http');
   var host = '123.58.180.77';
   //host = 'pomelo5.server.163.org';
   //host = 'fkmm8.photo.163.org';
+  //host = "192.168.144.199";
   var port = 6003;
   //port = 3031;
   var uid = typeof actor!='undefined'?actor.id:-33;
@@ -263,10 +271,12 @@ var http = require('http');
 
   var reg = function() {
       monitor('start','register',2);
+      console.time('register');
       pomelo.register({
                 domain: domain,
                 productKey: productKey
               }, function(data) {
+                console.timeEnd('register');
                 if (data.code === success) {
                 monitor('end','register',2);
                 isRegister = true;
@@ -356,6 +366,7 @@ function usersRequest() {
   });
 
   pomelo_client.on('broadcast', function(data) {
+    console.log("bbbbbbbbbbbbbb" + data);
     if (isLogined) {
       monitor('incr','broadcast');
       var data = JSON.parse(data.content);
@@ -378,8 +389,6 @@ function usersRequest() {
     console.error(Array.prototype.slice.call(arguments,0));
   }
 }
-
-
 
 })();
 
