@@ -341,7 +341,6 @@ var http = require('http');
   };
 
 function usersRequest() {
-  return ;
   pomelo_client.getOnlineUser({
     domain: domain,
     ids: friendsId
