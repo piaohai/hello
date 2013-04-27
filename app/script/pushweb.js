@@ -52,19 +52,16 @@ var http = require('http');
 
     // receive socket message
     socket.on('message', function(data) {
-      console.log(data);
-      try {
+      console.log('receive',data);
+      var msg = null;
       if (typeof data === 'string') {
-        data = JSON.parse(data);
+        msg = JSON.parse(data);
       }
-       console.log('dddddd' + data);
-       if (data instanceof Array) {
-        processMessageBatch(data);
+      if (msg instanceof Array) {
+        processMessageBatch(msg);
       } else {
-        processMessage(data);
-      } } catch(ex){
-        console.log(ex);
-      }
+        processMessage(msg);
+      }  
     });
 
     // encounter connection error
@@ -130,7 +127,6 @@ var http = require('http');
       processMessage(msgs[i]);
     }
     for (var key in message_store) {
-      console.log('ssssssssss' + key);
       pomelo.emit(key, message_store[key]);
     }
     message_store = {};
@@ -142,7 +138,11 @@ var http = require('http');
    * @param {Object} msg message need to process
    * @private
    */
-  var processMessage = function(msg) {
+  var processMessage = function(data) {
+    var msg = data;
+    if (typeof data === 'string') {
+        msg = JSON.parse(data);
+    }
     if (msg.id) {
       //if have a id then find the callback function with the request
       var cb = callbacks[msg.id];
@@ -151,6 +151,10 @@ var http = require('http');
       if (typeof cb !== 'function') {
         console.log('[pomeloclient.processMessage] cb is not a function for request ' + msg.id);
         return;
+      }
+
+      if (!msg.body) {
+        msg.body = msg;
       }
 
       cb(msg.body);
@@ -163,6 +167,7 @@ var http = require('http');
     }
     //if no id then it should be a server push message
     else {
+      console.error(msg);
       monitor('incr',msg.route);
       if (!message_store[msg.route]) message_store[msg.route] = [msg.body];
       else {
@@ -247,6 +252,7 @@ var http = require('http');
   //host = 'pomelo5.server.163.org';
   //host = 'fkmm8.photo.163.org';
   //host = "192.168.144.199";
+  //host = '127.0.0.1';
   var port = 6003;
   //port = 3031;
   var uid = typeof actor!='undefined'?actor.id:-33;
@@ -305,7 +311,6 @@ var http = require('http');
                   var msg = {user: user, nonce: nonce, expire_time: expire_time, signature: signature, domain: domain, productKey: productKey };
                   monitor('start','bind',1);
                   pomelo.bind(msg,function(data) {
-                    console.log(data);
                     if (data.code === success) {
                       monitor('end','bind',1);
                       //messageRequest(timestamp, 0);
@@ -355,7 +360,6 @@ function usersRequest() {
     domain: domain,
     ids: friendsId
   }, function(data) {
-    console.log(data.ids);
   });
 };
 
@@ -366,10 +370,13 @@ function usersRequest() {
   });
 
   pomelo_client.on('broadcast', function(data) {
-    console.log("bbbbbbbbbbbbbb" + data);
     if (isLogined) {
-      var data = JSON.parse(data.content);
-      console.log(data);
+      for (var i = 0; i < data.length; i++) {
+        var data = JSON.parse(data[i].content);
+        //addMessage(false, data.content);
+        //$("#chatHistory").show();
+        //tip('broadcast');
+      }
     } else {
       alert('broadcast');
     }
