@@ -2,7 +2,6 @@ var EventEmitter = require('events').EventEmitter;
 var io = require('socket.io-client');
 var http = require('http');
 
-
 (function() {
   if (typeof Object.create !== 'function') {
     Object.create = function(o) {
@@ -326,7 +325,7 @@ var http = require('http');
 
   var timerId = setInterval(function(){
     if (isRegister){
-      clearInterval(timerId);
+      clearInterval(timerId)
     } else {
       pomelo.init(host, port , register.bind(null));
     }
