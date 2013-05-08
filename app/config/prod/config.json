@@ -1,5 +1,5 @@
 {
-  "master":{"host": "ec2-107-20-126-1.compute-1.amazonaws.com","port":8888,"webport":8889,"cwebport":8890,"interval":1000},
+  "master":{"host": "ec2-107-20-126-1.compute-1.amazonaws.com","port":8888,"webport":8889,"cwebport":8890,"interval":500},
   "apps":{"host":"114.113.202.154","port":3010},
   "clients":["127.0.0.1"]
 }
