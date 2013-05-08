@@ -271,9 +271,7 @@ var http = require('http');
   var signature = "12";
   var timestamp = 0;
   var pomelo_client = pomelo;
-  var friendsId = [];
-
-
+  var friendsId = ['xy','abc','py','testvvv99','testvvv98','testvvv94'];
 
   var reg = function() {
       monitor('start','register',2);
