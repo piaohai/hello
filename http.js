@@ -1,17 +1,16 @@
 var http = require('http');
 var envConfig = require('./app/config/env.json');
 var config = require('./app/config/'+envConfig.env+'/config');
-var index = __filename.lastIndexOf('/');
-var path = __filename.substring(0,index);
+var path = __filename.substring(0,__filename.lastIndexOf('/'));
 var Robot = require('./lib/robot').Robot;
 var cluster = require('cluster');
 
 var robot = new Robot(config);
 
 var run = function(num){
-     for (var i = 0 ;i < num; i++) {
-         cluster.fork();
-     }
+   for (var i = 0 ;i < num; i++) {
+       cluster.fork();
+   }
 }
 
 var stop = function() {
@@ -40,8 +39,6 @@ var startHttp = function() {
             } else if (url.pathname === '/stop') {
                 setTimeout(function(){stop()},1000);
                 return res.end("HTTP SERVER CLOSE OK\n");
-            } else if (url.pathname === '/reset') {
-                return res.end(ok);
             } else if (url.pathname === '/start') {
                 var num = url.query['num'] || 1;
                 run(num);
