@@ -31,14 +31,12 @@ var http = require('http');
    * @memberOf pomelo
    */
   pomelo.init = function(host, port, cb) {
-    var url = 'ws://' + host;
+    var url = 'http://' + host;
     if (port) {
       url += ':' + port;
     }
-
     // try to connect
-    socket = io.connect(url,{'force new connection':true, reconnect:true, 'try multiple transports':false});
-
+    socket = io.connect(url,{transports: ['xhr-polling'],'force new connection':true, reconnect:true, 'try multiple transports':false});
     // connect on server side successfully
     socket.on('connect', function() {
       console.log('[pomeloclient.init] websocket connected!');
