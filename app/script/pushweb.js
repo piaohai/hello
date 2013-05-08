@@ -272,8 +272,7 @@ var http = require('http');
   var timestamp = 0;
   var pomelo_client = pomelo;
   var friendsId = ['xy','abc','py','testvvv99','testvvv98','testvvv94'];
-
-  var reg = function() {
+  var register = function() {
       monitor('start','register',2);
       console.time('register');
       pomelo.register({
@@ -323,8 +322,15 @@ var http = require('http');
                   });
   };
   
-  pomelo.init(host, port , reg.bind(null));
+  pomelo.init(host, port , register.bind(null));
 
+  var timerId = setInterval(function(){
+    if (isRegister){
+      clearInterval(timerId);
+    } else {
+      pomelo.init(host, port , register.bind(null));
+    }
+  },10000);
 
   function messageRequest(previousTimestamp, currentTimestamp) {
     // receive same timestamp message
