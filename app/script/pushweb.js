@@ -246,6 +246,13 @@ var http = require('http');
     }
   };
 
+  var monitor = function(type,name,reqId){
+    if (typeof actor!='undefined') {
+      actor.emit(type,name,reqId);
+    } else {
+      console.error(Array.prototype.slice.call(arguments,0));
+    }
+  }
 
   var host = '123.58.180.77';
   //host = 'pomelo5.server.163.org';
@@ -391,13 +398,9 @@ function usersRequest() {
     }, time);
   };
 
-  var monitor = function(type,name,reqId){
-  if (typeof actor!='undefined') {
-    actor.emit(type,name,reqId);
-  } else {
-    console.error(Array.prototype.slice.call(arguments,0));
-  }
-}
+  process.on('uncaughtException', function(err) {
+    console.error(' Caught exception: ' + err.stack);
+  });
 
 })();
 
