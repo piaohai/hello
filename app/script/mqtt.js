@@ -66,10 +66,12 @@ var isDebug = function(){
 
 
 var connect = function (port,host) {
+  console.time('reset');
   mqtt.createClient(port, host, function(err, client) {
     var act = new Action(client);
     if (err) {
       console.log(err);
+      console.timeEnd('reset');
       monitor('incr','connerror');
       lastTimeOut += Math.round(Math.random()*10000);
       setTimeout(function(){
