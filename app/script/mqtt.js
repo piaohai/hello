@@ -104,6 +104,7 @@ var connect = function (port,host) {
       } else {
         act.reconnect();
       }
+      setInterval(function() {client.pingreq();},30*60*1000);
     });
   });
 };
