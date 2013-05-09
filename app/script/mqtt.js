@@ -9,7 +9,7 @@ var deviceId = 'android_' + id;
 var fileName = '/tmp/times';
 var user = 'zxc792@163.com';
 var passed = 'qa1234';
-var interval = 20000;
+var interval = 655534;
 var domain = 'blog.163.com';
 var productKey = "94b4b71691a3ee3da605ed4f02696691";
 var platform = "android";
@@ -69,6 +69,7 @@ var connect = function (port,host) {
   mqtt.createClient(port, host, function(err, client) {
     var act = new Action(client);
     if (err) {
+      console.log(err);
       monitor('incr','connerror');
       lastTimeOut += Math.round(Math.random()*10000);
       setTimeout(function(){
