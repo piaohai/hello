@@ -7,7 +7,7 @@ var host = '123.58.180.26';
 var host = '54.250.75.221';
 var port = 8888;
 
-var count = 100;
+var count = 40000;
 
 var domain = 'test.news.163.com';
 var productKey = "6cdb8bab43bd49b18352b31fc6a9c991";
