@@ -7,7 +7,7 @@ var host = '123.58.180.26';
 var host = '54.250.75.221';
 var port = 8887;
 
-var count = 2000;
+var count = 20000;
 
 var domain = 'test.news.163.com';
 var productKey = "6cdb8bab43bd49b18352b31fc6a9c991";
@@ -151,9 +151,13 @@ var connect = function (port,host) {
 };
 
 (function(count){
-for (var i=0;i<count;i++) {
+var i = 0;
+var ids = setInterval(function(){
 	connect(port,host);
-}
+	if (i++>count) {
+	clearInterval(ids);
+	}
+},10)
 })(count);
 
 var Action = function(client){
