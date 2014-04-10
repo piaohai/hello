@@ -36,7 +36,8 @@ var http = require('http');
       url += ':' + port;
     }
     // try to connect
-    socket = io.connect(url,{transports: ['xhr-polling'],'force new connection':true, reconnect:true, 'try multiple transports':false});
+    // socket = io.connect(url,{transports: ['xhr-polling'],'force new connection':true, reconnect:true, 'try multiple transports':false});
+    socket = io.connect(url,{'force new connection':true, reconnect:true, 'try multiple transports':false});
     // connect on server side successfully
     socket.on('connect', function() {
       console.log('[pomeloclient.init] websocket connected!');
@@ -63,10 +64,12 @@ var http = require('http');
 
     // encounter connection error
     socket.on('error', function(err) {
+      monitor('incr', 'connecterror');
       cb(err);
     });
 
     socket.on('disconnect', function(reason) {
+      monitor('incr', 'disconnect');
       pomelo.emit('disconnect', reason);
     });
   };
@@ -158,6 +161,7 @@ var http = require('http');
 
       // register ack message & store deviceId
       if (msg.body.type === register_ack && msg.body.code == success) {
+        monitor('incr', 'registerack');
         isRegister = true;
       }
       return;
@@ -185,6 +189,7 @@ var http = require('http');
    * @memberOf pomelo
    */
   pomelo.register = function(opts, cb) {
+    monitor('incr', 'register');
     opts.sdk_version = sdk_version;
     request('register', opts, cb);
   };
@@ -252,15 +257,22 @@ var http = require('http');
     }
   }
 
-  var host = '123.58.180.77';
-  //host = 'pomelo5.server.163.org';
-  //host = 'fkmm8.photo.163.org';
-  //host = "192.168.144.199";
-  //host = '127.0.0.1';
+	var host = 'web.push.126.net';
+  // var host = '123.58.180.77';
+  // host = 'pomelo5.server.163.org';
+  // host = 'fkmm8.photo.163.org';
+  // host = "192.168.144.199";
+  // host = '127.0.0.1';
   var port = 6003;
   //port = 3031;
   var uid = typeof actor!='undefined'?actor.id:-33;
-  var user = 'testvvv' + uid;
+  // var user = 'testvvv' + uid;
+  var user = 'abc';
+	var randomV = Math.floor((Math.random() * 2) + 1);
+	if (randomV === 1) {
+		user = 'py';
+	}
+
   var username = user;
 
   var login_url = "http://123.58.180.180:8080/test/login/index?account="+ user;
@@ -284,6 +296,7 @@ var http = require('http');
                 productKey: productKey
               }, function(data) {
                 console.timeEnd('register');
+                console.log('data.code = ', data.code);
                 if (data.code === success) {
                 monitor('end','register',2);
                 isRegister = true;
@@ -314,6 +327,7 @@ var http = require('http');
                   pomelo.bind(msg,function(data) {
                     if (data.code === success) {
                       monitor('end','bind',1);
+                      monitor('incr', 'bind');
                       //messageRequest(timestamp, 0);
                       usersRequest();
                       setUpdateInterval(update_time);
@@ -379,6 +393,7 @@ function usersRequest() {
 
   pomelo_client.on('broadcast', function(data) {
     if (isLogined) {
+      monitor('incr', 'broadcast');
       for (var i = 0; i < data.length; i++) {
         var data = JSON.parse(data[i].content);
         //addMessage(false, data.content);
