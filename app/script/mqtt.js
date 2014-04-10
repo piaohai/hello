@@ -163,7 +163,7 @@ var Action = function(client){
 
 Action.prototype.subscribe = function() {
   var msgId = 1;
-  this.client.subscribe({messageId: msgId, subscriptions: [{topic: '/topic', qos: 1}]});
+  this.client.subscribe({messageId: msgId, subscriptions: [{topic: '/topic'}]});
 }
 
 Action.prototype.register = function() {
