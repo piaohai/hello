@@ -5,7 +5,7 @@ var events = ['connack', 'puback', 'publish', 'pubcomp', 'suback'];
 // var port = 3011;
 var host = '123.58.180.26';
 var host = '54.250.75.221';
-var port = 8888;
+var port = 8887;
 
 var count = 40000;
 
