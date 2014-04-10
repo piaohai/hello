@@ -134,8 +134,8 @@ var connect = function (port,host) {
       };
       test(e);
     }
-    client.connect({keepalive: interval, will: {topic: "verify",payload:JSON.stringify({key: "6a60565dc2b2f914ff104de34c06b37b"})}, qos: 1});
-    //client.connect({keepalive: interval});
+    //client.connect({keepalive: interval, will: {topic: "verify",payload:JSON.stringify({key: "6a60565dc2b2f914ff104de34c06b37b"})}, qos: 1});
+    client.connect({keepalive: interval});
     client.on('connack', function(packet) {
       console.log('connack~~~~~');
       if (!!isFirst) {
